@@ -1,10 +1,13 @@
 const pokemonList = document.getElementById('pokemonList');
 const btnsprev = document.getElementById('btnsprev');
 const btnnext = document.getElementById('btnnext');
+const searchinput = document.getElementById('search-input');
+const searchbutton =document.getElementById('search-button');
+
 // const maxRecord = 5
-const maxRecord = 156
+const maxRecord = 150;
 const limit = 1;
-let  offset = 0;
+let offset= 0;
 
 
 function loadPokemonItems(offset,limit) {
@@ -23,14 +26,16 @@ function loadPokemonItems(offset,limit) {
                     <img src="${pokemon.photo}"
                         alt="${pokemon.name}">
                 </div>
-                </div>
                 <ol class ="skill">
                 Skill:${pokemon.skill}
                 </ol>
+                <div class = "paraments">
                 <ol class = "weight">Weight: ${pokemon.weight / 10}kg
                 <ol/>
                 <ol class ="height">Height: ${pokemon.height / 10} M
                 </ol>
+                </div>
+                
             </li>
         `).join('')
 
@@ -38,17 +43,18 @@ function loadPokemonItems(offset,limit) {
     })
 }
 
-loadPokemonItems(offset,limit)
+document.getElementById('btnsprev').disabled = true
 
 btnnext.addEventListener('click', () => {
-    offset += limit;
-    const qntRecordWithNewPage = offset + limit
+    offset += limit;;
+    const qntRecordWithNewPage = offset + limit;
+    document.getElementById('btnsprev').disabled = false;
 
     if (qntRecordWithNewPage >= maxRecord) {
-        const newLimit = maxRecord + offset;
+        const newLimit = maxRecord - offset;
         loadPokemonItems(offset, newLimit)
 
-        btnnext.parentElement.removeChild(btnnext)
+    document.getElementById('btnnext').disabled = true
     } else {
         loadPokemonItems(offset, limit)
     }
@@ -56,12 +62,31 @@ btnnext.addEventListener('click', () => {
 
 btnsprev.addEventListener('click', () => {
     offset-=limit;
-   loadPokemonItems(offset,limit)
-   if(offset-=limit = 0){
-    btnsprev.parentElement.removeChild(btnsprev)
-    loadPokemonItems(offset,limit)
-   }
+    loadPokemonItems(offset,limit);
+    const qntRecordWithPrevPage = offset;
+    if(qntRecordWithPrevPage === 0){
+        document.getElementById('btnsprev').disabled = true;
+        document.getElementById('btnnext').disabled = false;
+    }else{
+        loadPokemonItems(offset,limit)
+    }
 })
+
+
+searchbutton.addEventListener('click', (event) => {
+    event.preventDefault()
+    if(searchinput.value - 1  < maxRecord){
+        loadPokemonItems(searchinput.value - 1,limit);
+        
+    }else{
+        window.alert('Erro pokemon invalido')
+        loadPokemonItems(offset,limit);
+    }
+})
+
+loadPokemonItems(offset,limit)
+
+
 
 
 
